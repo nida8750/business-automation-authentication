@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
     celery_broker_url: str = "redis://localhost:6379/1"
     celery_result_backend: str = "redis://localhost:6379/2"
+    celery_task_always_eager: bool = False
     jwt_secret_key: str = "change_me_to_a_long_random_dev_secret"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 15

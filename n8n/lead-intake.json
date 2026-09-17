@@ -1,0 +1,35 @@
+{
+  "name": "NexusFlow lead intake",
+  "nodes": [
+    {
+      "name": "Form or CRM trigger",
+      "type": "n8n-nodes-base.webhook",
+      "notes": "Replace with your real trigger. POST the JSON body below to NexusFlow."
+    },
+    {
+      "name": "NexusFlow",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8000/api/v1/webhooks/n8n/leads",
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "X-Webhook-Secret", "value": "={{$env.N8N_WEBHOOK_SECRET}}" }
+          ]
+        },
+        "body": {
+          "email": "lead@example.com",
+          "full_name": "Casey Buyer",
+          "company": "Acme Industries",
+          "title": "VP Operations",
+          "website": "https://acme.example",
+          "phone": "+1-555-0100",
+          "notes": "Inbound from website",
+          "external_id": "n8n-row-123",
+          "start_run": true
+        }
+      }
+    }
+  ]
+}

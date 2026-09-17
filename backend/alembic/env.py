@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config, pool
 
 from app.config import settings
 from app.db.base import Base
-from app.models import RefreshToken, User
+from app.models import AgentRun, AgentStep, Approval, Lead, OutboxEvent, RefreshToken, User
 
 config = context.config
 
@@ -18,7 +18,7 @@ config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"
 target_metadata = Base.metadata
 
 # Imported so models are registered on Base.metadata before autogenerate.
-_ = (User, RefreshToken)
+_ = (User, RefreshToken, Lead, AgentRun, AgentStep, Approval, OutboxEvent)
 
 
 def run_migrations_offline() -> None:

@@ -27,6 +27,11 @@ This is not a chatbot. It is a workflow engine with a supervisor agent, backgrou
 | Jobs | Celery |
 | Automation | n8n webhooks |
 | Deploy | Docker Compose |
+## Docs
+- [AUTH_README.md](AUTH_README.md) — JWT auth boilerplate and how to copy it
+- [FLOW_README.md](FLOW_README.md) — lead → agents → approval → outbox
+- [FRONTEND.md](FRONTEND.md) — React operations desk (how to run + screens)
+
 ## Repository layout
 ```text
 nexusflow/
