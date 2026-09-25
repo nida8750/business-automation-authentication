@@ -3,10 +3,9 @@ from uuid import UUID
 
 from sqlalchemy import DateTime, ForeignKey, Integer, Text, Uuid
 from sqlalchemy import Enum as SAEnum
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
+from app.db.base import Base, JSONType, TimestampMixin, UUIDPrimaryKeyMixin
 from app.models.enums import RunStatus, RunTrigger
 
 
@@ -36,12 +35,12 @@ class AgentRun(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         nullable=False,
         default=RunTrigger.MANUAL,
     )
-    plan: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    research: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    qualification: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    outreach: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    crm_proposal: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    report: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    plan: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    research: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    qualification: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    outreach: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    crm_proposal: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    report: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
     prompt_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     completion_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)

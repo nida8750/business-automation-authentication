@@ -89,7 +89,7 @@ Copy these paths. Keep the same package layout (`app/...`) unless you rename imp
 | `backend/app/core/tokens.py` | Create/decode access + refresh JWTs (`sub`, `typ`, `jti`, `ver`) |
 | `backend/app/core/rate_limit.py` | In-memory sliding window for public auth routes |
 | `backend/app/core/exceptions.py` | `AppError` + FastAPI handlers |
-| `backend/app/core/email.py` | Verify + reset emails (SMTP, or log in development) |
+| `backend/app/core/email.py` | Verify + reset HTML mail over SMTP (Gmail App Password). Tokens never logged. |
 | `backend/app/schemas/auth.py` | Request/response models + password validator |
 | `backend/app/services/auth_service.py` | All auth business logic |
 | `backend/app/api/v1/routes/auth.py` | HTTP routes |
@@ -146,7 +146,7 @@ Do **not** copy OpenAI / LangGraph / Redis / Celery just to get auth.
 
 ## Changes you must make in the new project
 
-These are the only intentional edits. If you skip them, auth will run but it will still look like NexusFlow or reuse a leaked secret.
+These are the only intentional edits. If you skip them, auth will run but it will still look like Nexaflow or reuse a leaked secret.
 
 ### 1. New JWT secret (required)
 
@@ -173,23 +173,25 @@ APP_NAME=YourApp
 APP_ENV=development
 FRONTEND_ORIGIN=http://localhost:5173
 CORS_ORIGINS=http://localhost:5173
-SMTP_HOST=
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=
+SMTP_USER=you@gmail.com
 SMTP_PASSWORD=
-SMTP_FROM=noreply@yourapp.com
+SMTP_FROM=you@gmail.com
 ```
+
+Gmail rejects the normal account password (`SMTP 535`). Create an **App Password** (2-Step Verification on) and paste it as `SMTP_PASSWORD`. Spaces in the 16-character password are stripped.
 
 `email.py` builds:
 
 - `{FRONTEND_ORIGIN}/verify-email?token=...`
 - `{FRONTEND_ORIGIN}/reset-password?token=...`
 
-Either add those two frontend pages, or change the paths in `backend/app/core/email.py`.
+Raw tokens are emailed only. They are hashed in the database and are not returned by the API.
 
-Without `SMTP_HOST`, verification/reset emails are only logged in development.
+Without `SMTP_HOST` + `SMTP_USER` + `SMTP_PASSWORD`, verification mail is skipped and register still creates an unverified user. Production (`APP_ENV=production`) refuses to start without SMTP.
 
-### 3. Roles (NexusFlow-specific today)
+### 3. Roles (Nexaflow-specific today)
 
 `backend/app/models/user.py` currently has:
 
@@ -256,7 +258,7 @@ def admin_only(user: User = Depends(require_roles(UserRole.ADMIN))):
 
 - `.env` (secrets)
 - `OPENAI_*`, agent, CRM, n8n, Redis, Celery settings
-- NexusFlow product copy in `readme.md`
+- Nexaflow product copy in `readme.md`
 - Frontend (this kit is backend-only; you still need login/verify/reset screens)
 
 ---

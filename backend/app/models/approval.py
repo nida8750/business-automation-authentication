@@ -3,10 +3,9 @@ from uuid import UUID
 
 from sqlalchemy import DateTime, ForeignKey, Text, Uuid
 from sqlalchemy import Enum as SAEnum
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
+from app.db.base import Base, JSONType, TimestampMixin, UUIDPrimaryKeyMixin
 from app.models.enums import ApprovalStatus, ApprovalType
 
 
@@ -35,7 +34,7 @@ class Approval(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         default=ApprovalStatus.PENDING,
         index=True,
     )
-    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    payload: Mapped[dict] = mapped_column(JSONType, nullable=False)
     reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     decided_by_user_id: Mapped[UUID | None] = mapped_column(
         Uuid(as_uuid=True),

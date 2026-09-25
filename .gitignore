@@ -28,6 +28,7 @@ build/
 node_modules/
 frontend/dist/
 frontend/.vite/
+frontend/.next/
 *.tsbuildinfo
 npm-debug.log*
 yarn-debug.log*

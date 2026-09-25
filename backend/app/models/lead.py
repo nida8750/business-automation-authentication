@@ -2,10 +2,9 @@ from uuid import UUID
 
 from sqlalchemy import ForeignKey, String, Text, Uuid
 from sqlalchemy import Enum as SAEnum
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
+from app.db.base import Base, JSONType, TimestampMixin, UUIDPrimaryKeyMixin
 from app.models.enums import LeadSource, LeadStatus
 
 
@@ -30,7 +29,7 @@ class Lead(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         default=LeadStatus.NEW,
         index=True,
     )
-    extra: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    extra: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
     external_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     created_by_user_id: Mapped[UUID | None] = mapped_column(
         Uuid(as_uuid=True),

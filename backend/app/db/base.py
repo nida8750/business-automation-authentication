@@ -1,10 +1,16 @@
 from datetime import datetime
 from uuid import UUID, uuid4
-from sqlalchemy import DateTime, Uuid, func
+from sqlalchemy import JSON, DateTime, Uuid, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 class Base(DeclarativeBase):
     """Root declarative class. All ORM models inherit from this."""
     pass
+
+
+# PostgreSQL remains the production store, while the generic JSON fallback lets
+# the test suite run against an isolated in-memory SQLite database.
+JSONType = JSON().with_variant(JSONB, "postgresql")
 class UUIDPrimaryKeyMixin:
     """UUID primary key generated in the application."""
     id: Mapped[UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid4)

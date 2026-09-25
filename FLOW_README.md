@@ -1,6 +1,6 @@
 # Next flow after auth — Lead → Agents → Approval → Outbox
 
-Auth is done. A signed-in user can now run the real NexusFlow loop: capture a lead, let agents research and draft, wait for a human, then execute through the outbox.
+Auth is done. A signed-in user can now run the real Nexaflow loop: capture a lead, let agents research and draft, wait for a human, then execute through the outbox.
 
 This is not a chatbot. The graph always writes an audit trail (`agent_steps`). Risky actions never go out until a reviewer approves them (unless you turn that flag off).
 

@@ -60,7 +60,7 @@ def supervisor_node(state: AgentState) -> AgentState:
     lead = _lead(state)
     started = time.perf_counter()
     llm, llm_ms = _timed_llm(
-        "You are the NexusFlow supervisor. Return JSON with keys plan (string) and next_agents (array of strings).",
+        "You are the Nexaflow supervisor. Return JSON with keys plan (string) and next_agents (array of strings).",
         (
             f"Lead: {lead.get('full_name')} <{lead.get('email')}> at {lead.get('company')}. "
             "Choose a standard pipeline: research, qualification, outreach, crm, reporting."
@@ -234,7 +234,7 @@ def _heuristic_outreach(lead: dict[str, Any], research: dict[str, Any], qualific
         f"I reviewed {company} and thought a lightweight operations workflow might help "
         f"your team research inbound leads and keep humans in the loop before outreach goes out.\n\n"
         f"Would you be open to a 15-minute walkthrough of {app}?\n\n"
-        "Thanks,\nNexusFlow"
+        f"Thanks,\n{app}"
     )
     return {
         "to": lead.get("email"),

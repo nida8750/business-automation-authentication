@@ -38,7 +38,7 @@ def setup_logging(*, debug: bool) -> None:
     logging.getLogger("uvicorn.access").setLevel(logging.INFO)
     logging.getLogger(APP_LOGGER_NAME).setLevel(level)
 def get_logger(name: str | None = None) -> logging.Logger:
-    """Return a child logger under the NexusFlow namespace."""
+    """Return a child logger under the Nexaflow namespace."""
     if name is None:
         return logging.getLogger(APP_LOGGER_NAME)
     if name.startswith(APP_LOGGER_NAME):

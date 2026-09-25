@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+html.dark {
+  color-scheme: dark;
+  --bg: 6 8 15;
+  --bg-elev: 12 18 32;
+  --bg-soft: 18 26 46;
+  --text: 232 238 252;
+  --muted: 148 163 184;
+  --line: 148 163 184;
+  --line-a: 0.16;
+  --card: 255 255 255;
+  --card-a: 0.045;
+  --blue: 59 130 246;
+  --violet: 139 92 246;
+  --mint: 94 234 212;
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: "Courier New", Courier, monospace;
+}
+
+html.light {
+  color-scheme: light;
+  --bg: 244 247 252;
+  --bg-elev: 255 255 255;
+  --bg-soft: 237 242 250;
+  --text: 15 23 42;
+  --muted: 71 85 105;
+  --line: 15 23 42;
+  --line-a: 0.08;
+  --card: 255 255 255;
+  --card-a: 0.86;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: rgb(var(--bg));
+  color: rgb(var(--text));
+}
+
+body {
+  margin: 0;
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.28);
+}
+
+*:focus-visible {
+  outline: 2px solid rgb(var(--blue));
+  outline-offset: 3px;
+}
+
+.bg-app {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--text));
+}
+
+.bg-elev {
+  background-color: rgb(var(--bg-elev));
+}
+
+.text-muted {
+  color: rgb(var(--muted));
+}
+
+.border-line {
+  border-color: rgb(var(--line) / var(--line-a));
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgb(var(--line) / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--line) / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.glass {
+  background: rgb(var(--card) / var(--card-a));
+  border: 1px solid rgb(var(--line) / var(--line-a));
+  box-shadow: 0 18px 50px -28px rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(10px);
+}
+
+.noise-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+@keyframes pulse-node {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.flow-dash {
+  stroke-dasharray: 6 10;
+  animation: dash 8s linear infinite;
+}
+
+.nexa-logo-mark {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 0 8px #16c8ff66);
+}
+
+.nexa-logo-track {
+  fill: none;
+  stroke: #1a2d50;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+html.light .nexa-logo-track {
+  stroke: #94a3b8;
+}
+
+.nexa-logo-flow {
+  fill: none;
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-dasharray: 46 166;
+  animation: nexa-logo-stream 2.55s linear infinite;
+}
+
+.nexa-logo-flow-delay {
+  animation-delay: -1.275s;
+  opacity: 0.82;
+}
+
+.nexa-logo-core {
+  fill: #baf2ff;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nexa-logo-pulse 2.55s ease-in-out infinite;
+}
+
+@keyframes nexa-logo-stream {
+  to {
+    stroke-dashoffset: -212;
+  }
+}
+
+@keyframes nexa-logo-pulse {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-dash,
+  .pulse-node,
+  .nexa-logo-flow,
+  .nexa-logo-core {
+    animation: none;
+  }
+}

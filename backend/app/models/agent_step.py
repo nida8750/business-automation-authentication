@@ -3,10 +3,9 @@ from uuid import UUID
 
 from sqlalchemy import DateTime, ForeignKey, Integer, Text, Uuid
 from sqlalchemy import Enum as SAEnum
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
+from app.db.base import Base, JSONType, TimestampMixin, UUIDPrimaryKeyMixin
 from app.models.enums import AgentName, StepStatus
 
 
@@ -29,8 +28,8 @@ class AgentStep(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         nullable=False,
         default=StepStatus.PENDING,
     )
-    input_payload: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    output_payload: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    input_payload: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    output_payload: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
     prompt_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     completion_tokens: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)

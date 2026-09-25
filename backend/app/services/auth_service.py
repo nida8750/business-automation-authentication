@@ -67,7 +67,18 @@ class AuthService:
             self.db.rollback()
             raise ConflictError("An account with this email already exists.") from exc
         self.db.refresh(user)
-        send_verification_email(to_email=user.email, token=raw_token)
+        if settings.auth_auto_verify:
+            user.email_verified = True
+            user.email_verified_at = _utcnow()
+            user.email_verification_hash = None
+            user.email_verification_expires_at = None
+            self.db.commit()
+            self.db.refresh(user)
+        else:
+            send_verification_email(to_email=user.email, token=raw_token)
+        from app.services.workspace_service import BillingService
+
+        BillingService(self.db).ensure_account(user)
         return user
 
     def login(self, payload: LoginRequest) -> TokenResponse:
@@ -231,10 +242,12 @@ class AuthService:
     def _issue_tokens(self, user: User) -> TokenResponse:
         now = _utcnow()
         self.db.execute(
-            delete(RefreshToken).where(
+            delete(RefreshToken)
+            .where(
                 RefreshToken.user_id == user.id,
                 RefreshToken.expires_at < now,
             )
+            .execution_options(synchronize_session=False)
         )
         refresh_jti = str(uuid4())
         access_token = create_access_token(user.id, token_version=user.token_version)

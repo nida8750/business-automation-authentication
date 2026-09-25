@@ -67,6 +67,12 @@ def create_app() -> FastAPI:
             "app": settings.app_name,
             "env": settings.app_env,
             "version": __version__,
+            "supabase": {
+                "attached": settings.supabase_attached,
+                "project_ref": settings.supabase_project_ref or None,
+                "url": settings.supabase_url or None,
+                "db_host": settings.postgres_host if settings.supabase_attached else None,
+            },
         }
 
     if settings.is_development:

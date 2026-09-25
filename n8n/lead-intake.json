@@ -1,35 +1,148 @@
 {
-  "name": "NexusFlow lead intake",
+  "name": "Nexaflow lead intake",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
   "nodes": [
     {
-      "name": "Form or CRM trigger",
-      "type": "n8n-nodes-base.webhook",
-      "notes": "Replace with your real trigger. POST the JSON body below to NexusFlow."
+      "id": "a6f0c1e8-0b2a-4d3e-9c11-7f1a2b3c4d01",
+      "name": "Setup",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-560, -140],
+      "parameters": {
+        "width": 400,
+        "height": 560,
+        "color": 5,
+        "content": "## Import\n\n1. n8n → ⋮ → **Import from File** → `n8n/lead-intake.json`\n2. **POST Nexaflow** pe authentication khud attach karo (JSON mein credential bound nahi hai).\n\n**Header Auth (recommended)**\n- Authentication = Generic Credential Type → Header Auth\n- Name: `X-Webhook-Secret`\n- Value: repo `.env` `N8N_WEBHOOK_SECRET` (JWT nahi)\n\n**URL**\nSame PC: `http://127.0.0.1:8000/api/v1/webhooks/n8n/leads`\nn8n in Docker: `http://host.docker.internal:8000/api/v1/webhooks/n8n/leads`\n\n**Test**\nExecute workflow (sample Casey Buyer) or POST JSON to webhook path `nexaflow-lead`.\nSame `external_id` = same lead. Desk: `/app/leads`."
+      }
     },
     {
-      "name": "NexusFlow",
-      "type": "n8n-nodes-base.httpRequest",
+      "id": "b1a2c3d4-1111-4222-8333-7f1a2b3c4d02",
+      "name": "When clicking Test workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-40, 40],
+      "parameters": {}
+    },
+    {
+      "id": "c2b3d4e5-2222-4333-8444-7f1a2b3c4d03",
+      "name": "Sample lead",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [180, 40],
       "parameters": {
-        "method": "POST",
-        "url": "http://localhost:8000/api/v1/webhooks/n8n/leads",
-        "headerParameters": {
-          "parameters": [
-            { "name": "Content-Type", "value": "application/json" },
-            { "name": "X-Webhook-Secret", "value": "={{$env.N8N_WEBHOOK_SECRET}}" }
+        "assignments": {
+          "assignments": [
+            { "id": "s1", "name": "email", "value": "buyer@acme.com", "type": "string" },
+            { "id": "s2", "name": "full_name", "value": "Casey Buyer", "type": "string" },
+            { "id": "s3", "name": "company", "value": "Acme Industries", "type": "string" },
+            { "id": "s4", "name": "title", "value": "VP Operations", "type": "string" },
+            { "id": "s5", "name": "website", "value": "https://acme.example", "type": "string" },
+            { "id": "s6", "name": "phone", "value": "+1-555-0100", "type": "string" },
+            { "id": "s7", "name": "notes", "value": "Inbound from n8n test", "type": "string" },
+            { "id": "s8", "name": "external_id", "value": "n8n-row-123", "type": "string" },
+            { "id": "s9", "name": "start_run", "value": true, "type": "boolean" }
           ]
         },
-        "body": {
-          "email": "lead@example.com",
-          "full_name": "Casey Buyer",
-          "company": "Acme Industries",
-          "title": "VP Operations",
-          "website": "https://acme.example",
-          "phone": "+1-555-0100",
-          "notes": "Inbound from website",
-          "external_id": "n8n-row-123",
-          "start_run": true
+        "options": {}
+      }
+    },
+    {
+      "id": "d3c4e5f6-3333-4444-8555-7f1a2b3c4d04",
+      "name": "Inbound lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-40, 280],
+      "webhookId": "c8e91d2a-7b44-4f0e-9a16-2d3c5e7f8a90",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nexaflow-lead",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "notes": "Form / CRM / Typeform yahan swap kar sakti ho. Body Normalize lead map karta hai."
+    },
+    {
+      "id": "e4d5f6a7-4444-4555-8666-7f1a2b3c4d05",
+      "name": "Normalize lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 160],
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst src = (item.body && typeof item.body === 'object') ? item.body : item;\nconst first = String(src.first_name || src.firstName || '');\nconst last = String(src.last_name || src.lastName || '');\nconst combined = `${first} ${last}`.trim();\nconst fullName = String(src.full_name || src.name || combined || '').trim();\nconst start = src.start_run;\nconst extra = (src.extra && typeof src.extra === 'object') ? src.extra : {};\n\nreturn [{\n  json: {\n    email: String(src.email || '').trim().toLowerCase(),\n    full_name: fullName,\n    company: src.company || null,\n    title: src.title || src.job_title || null,\n    website: src.website || src.domain || null,\n    phone: src.phone || src.phone_number || null,\n    notes: src.notes || src.message || null,\n    extra: { ...extra, n8n_execution_id: $execution.id },\n    external_id: String(src.external_id || src.id || `n8n-${$execution.id}`),\n    start_run: !(start === false || start === 'false' || start === 0),\n  },\n}];"
+      }
+    },
+    {
+      "id": "f5e6a7b8-5555-4666-8777-7f1a2b3c4d06",
+      "name": "POST Nexaflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 160],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/api/v1/webhooks/n8n/leads",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ email: $json.email, full_name: $json.full_name, company: $json.company, title: $json.title, website: $json.website, phone: $json.phone, notes: $json.notes, extra: $json.extra, external_id: $json.external_id, start_run: $json.start_run }) }}",
+        "options": {
+          "timeout": 60000
         }
       }
     }
-  ]
+  ],
+  "connections": {
+    "When clicking Test workflow": {
+      "main": [
+        [
+          {
+            "node": "Sample lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sample lead": {
+      "main": [
+        [
+          {
+            "node": "Normalize lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inbound lead": {
+      "main": [
+        [
+          {
+            "node": "Normalize lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize lead": {
+      "main": [
+        [
+          {
+            "node": "POST Nexaflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
 }

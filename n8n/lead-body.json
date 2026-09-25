@@ -1,0 +1,11 @@
+{
+  "email": "buyer@acme.com",
+  "full_name": "Casey Buyer",
+  "company": "Acme Industries",
+  "title": "VP Operations",
+  "website": "https://acme.example",
+  "phone": "+1-555-0100",
+  "notes": "Inbound from website",
+  "external_id": "n8n-row-123",
+  "start_run": true
+}

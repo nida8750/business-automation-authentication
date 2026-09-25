@@ -71,3 +71,33 @@ class OutboxStatus(str, Enum):
     DELIVERED = "delivered"
     FAILED = "failed"
     CANCELLED = "cancelled"
+
+
+class PlanCode(str, Enum):
+    STARTER = "starter"
+    GROWTH = "growth"
+    ENTERPRISE = "enterprise"
+
+
+class BillingStatus(str, Enum):
+    TRIALING = "trialing"
+    ACTIVE = "active"
+    PAST_DUE = "past_due"
+    CANCELED = "canceled"
+
+
+class InvoiceStatus(str, Enum):
+    OPEN = "open"
+    PAID = "paid"
+    VOID = "void"
+
+
+class AgentDeployStatus(str, Enum):
+    AVAILABLE = "available"
+    DEPLOYED = "deployed"
+    PAUSED = "paused"
+
+
+class IntegrationStatus(str, Enum):
+    CONNECTED = "connected"
+    AVAILABLE = "available"

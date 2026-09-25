@@ -5,6 +5,7 @@ from typing import Any
 import httpx
 
 from app.config import settings
+from app.core.email import send_mail
 from app.core.logging import get_logger
 
 logger = get_logger("outbox")
@@ -22,21 +23,10 @@ def dispatch_send_email(payload: dict[str, Any]) -> dict[str, Any]:
         "outbox_email_dispatch",
         extra={"extra_data": {"to": to_email, "subject": subject}},
     )
-    if settings.smtp_host:
-        # Reuse the SMTP path by sending a one-off message through the same mail helper shape.
-        from email.message import EmailMessage
-        import smtplib
-
-        message = EmailMessage()
-        message["From"] = settings.smtp_from
-        message["To"] = to_email
-        message["Subject"] = subject
-        message.set_content(body)
-        with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=15) as smtp:
-            smtp.starttls()
-            if settings.smtp_user:
-                smtp.login(settings.smtp_user, settings.smtp_password)
-            smtp.send_message(message)
+    if settings.smtp_ready:
+        sent = send_mail(to_email=to_email, subject=subject, text=body, event="outbox_email")
+        if not sent:
+            raise RuntimeError("SMTP rejected the outreach email.")
         return {"channel": "smtp", "to": to_email}
 
     if settings.is_development:

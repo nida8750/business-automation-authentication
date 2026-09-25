@@ -7,14 +7,20 @@ from app.models.lead import Lead
 from app.models.outbox import OutboxEvent
 from app.models.refresh_token import RefreshToken
 from app.models.user import User, UserRole
+from app.models.workspace import BillingAccount, Invoice, PaymentMethod, WorkspaceAgent, WorkspaceIntegration
 
 __all__ = [
     "AgentRun",
     "AgentStep",
     "Approval",
+    "BillingAccount",
+    "Invoice",
     "Lead",
     "OutboxEvent",
+    "PaymentMethod",
     "RefreshToken",
     "User",
     "UserRole",
+    "WorkspaceAgent",
+    "WorkspaceIntegration",
 ]

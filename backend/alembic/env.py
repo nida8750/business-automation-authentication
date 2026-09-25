@@ -5,7 +5,20 @@ from sqlalchemy import engine_from_config, pool
 
 from app.config import settings
 from app.db.base import Base
-from app.models import AgentRun, AgentStep, Approval, Lead, OutboxEvent, RefreshToken, User
+from app.models import (
+    AgentRun,
+    AgentStep,
+    Approval,
+    BillingAccount,
+    Invoice,
+    Lead,
+    OutboxEvent,
+    PaymentMethod,
+    RefreshToken,
+    User,
+    WorkspaceAgent,
+    WorkspaceIntegration,
+)
 
 config = context.config
 
@@ -18,7 +31,20 @@ config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"
 target_metadata = Base.metadata
 
 # Imported so models are registered on Base.metadata before autogenerate.
-_ = (User, RefreshToken, Lead, AgentRun, AgentStep, Approval, OutboxEvent)
+_ = (
+    User,
+    RefreshToken,
+    Lead,
+    AgentRun,
+    AgentStep,
+    Approval,
+    OutboxEvent,
+    WorkspaceAgent,
+    WorkspaceIntegration,
+    BillingAccount,
+    PaymentMethod,
+    Invoice,
+)
 
 
 def run_migrations_offline() -> None:

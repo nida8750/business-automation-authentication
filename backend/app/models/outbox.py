@@ -3,10 +3,9 @@ from uuid import UUID
 
 from sqlalchemy import DateTime, ForeignKey, Integer, Text, Uuid
 from sqlalchemy import Enum as SAEnum
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
+from app.db.base import Base, JSONType, TimestampMixin, UUIDPrimaryKeyMixin
 from app.models.enums import OutboxStatus, OutboxType
 
 
@@ -37,7 +36,7 @@ class OutboxEvent(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         default=OutboxStatus.PENDING,
         index=True,
     )
-    payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
+    payload: Mapped[dict] = mapped_column(JSONType, nullable=False)
     attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     last_error: Mapped[str | None] = mapped_column(Text, nullable=True)
     processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

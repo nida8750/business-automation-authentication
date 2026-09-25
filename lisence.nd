@@ -1,0 +1,39 @@
+License
+Private / portfolio project. Add a license before you publish.
+
+
+**EXPLANATION:**
+- Title + first paragraph: recruiter 10 second mein samajh jaye ke ye chatbot nahi, operations platform hai.
+- **What it does:** numbered pipeline — yehi system ka backbone hai.
+- **Tech stack table:** interviews mein “what did you use and why” yahan se start hota hai.
+- **Layout:** future folders ka map; aaj sirf README.
+- **Local setup:** abhi `cp .env.example` mention hai, lekin wo file Step 2+ mein aayegi. Dependency clearly likhi hai.
+- **Core domain:** ye baad mein SQLAlchemy models banenge.
+- **Agent model:** LangGraph supervisor pattern ka contract.
+- **Status:** honestly Phase 1 — overclaim nahi.
+Roman English: *Is file mein koi running server nahi. Ye documentation hai. Lekin ye important hai kyunki baqi saari files isi contract ko follow karengi.*
+**CONNECTION:**
+Ye file kisi service se HTTP call nahi karti.
+Ye **human + future files** se connect hai:
+- `.gitignore` (agli files) git hygiene
+- `.env.example` setup instructions ko real banayega
+- `backend/` aur `frontend/` isi architecture ko implement karenge
+**DEPENDENCIES:**
+- Previous: koi nahi (empty repo)
+- Future: `.gitignore`, `.env.example`, `backend/pyproject.toml`
+- Runtime: koi nahi — Markdown hai
+**RUN / TEST:**
+Koi server start nahi karna.
+1. Cursor mein workspace root open rakho.
+2. Nayi file banao: `README.md`
+3. Upar wala complete content paste karo.
+4. Save.
+Optional check — file exist karti hai:
+**TERMINAL COMMAND:**
+```powershell
+Get-Item ".\README.md" | Select-Object FullName, Length
+
+
+uv run python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+
+New-Item -ItemType Directory -Path ".\backend\app\core" -Force
